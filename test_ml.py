@@ -1,28 +1,59 @@
-import pytest
-# TODO: add necessary import
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
 
-# TODO: implement the first test. Change the function name and input as needed
-def test_one():
-    """
-    # add description for the first test
-    """
-    # Your code here
-    pass
-
-
-# TODO: implement the second test. Change the function name and input as needed
-def test_two():
-    """
-    # add description for the second test
-    """
-    # Your code here
-    pass
+from ml.data import apply_label
+from ml.model import (
+    compute_model_metrics,
+    inference,
+    train_model,
+)
 
 
-# TODO: implement the third test. Change the function name and input as needed
-def test_three():
-    """
-    # add description for the third test
-    """
-    # Your code here
-    pass
+def test_apply_labels():
+    assert apply_label(np.array([1])) == ">50K"
+    assert apply_label(np.array([0])) == "<=50K"
+
+
+def test_train_model():
+    X = np.array(
+        [
+            [25, 40],
+            [45, 50],
+            [30, 35],
+            [55, 60],
+        ]
+    )
+    y = np.array([0, 1, 0, 1])
+
+    model = train_model(X, y)
+
+    assert isinstance(model, RandomForestClassifier)
+
+
+def test_inference():
+    X = np.array(
+        [
+            [25, 40],
+            [45, 50],
+            [30, 35],
+            [55, 60],
+        ]
+    )
+    y = np.array([0, 1, 0, 1])
+
+    model = train_model(X, y)
+    preds = inference(model, X)
+
+    assert isinstance(preds, np.ndarray)
+    assert len(preds) == len(y)
+
+
+def test_compute_model_metrics():
+    y = np.array([0, 1, 1, 0])
+    preds = np.array([0, 1, 1, 0])
+
+    precision, recall, fbeta = compute_model_metrics(y, preds)
+
+    assert precision == 1.0
+    assert recall == 1.0
+    assert fbeta == 1.0
